@@ -10,7 +10,7 @@ const crypto = require('crypto');
 
 let jsonParser = bodyParser.json()
 
-app.post('/decode_token',jsonParser, (req, res) => {
+app.post('/api/decode_token',jsonParser, (req, res) => {
 
 
   //return res.send(req.body.tk)
@@ -98,7 +98,7 @@ app.post('/decode_token',jsonParser, (req, res) => {
   
 })
 
-app.post('/generate_nonce',jsonParser,(req, res) =>{
+app.post('/api/generate_nonce',jsonParser,(req, res) =>{
 
   const generateNonce = () => {
     // Crear un string seguro para URL
