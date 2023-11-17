@@ -101,30 +101,21 @@ app.post('/api/decode_token',jsonParser, (req, res) => {
 app.post('/api/generate_nonce',jsonParser,(req, res) =>{
 
   const generateNonce = () => {
-    // Crear un string seguro para URL
-    const urlSafeString = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_.';
+    // Generar un buffer de 32 bytes (256 bits)
+  const randomBytes = crypto.randomBytes(32);
 
-    // Generar una cadena aleatoria con los caracteres permitidos (longitud máxima de 500)
-    let nonce = '';
-    const maxLength = 500;
-    for (let i = 0; i < maxLength; i++) {
-        nonce += urlSafeString.charAt(Math.floor(Math.random() * urlSafeString.length));
-    }
+  // Convertir el buffer a una cadena Base64 y eliminar caracteres especiales
+  const base64Nonce = randomBytes.toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
 
-    // Codificar la cadena en Base64
-    const base64Nonce = Buffer.from(nonce).toString('base64');
+  // Asegurar que la longitud esté entre 16 y 500 caracteres
+  const nonce = base64Nonce.slice(0, Math.min(Math.max(16, base64Nonce.length), 500));
 
-    // Asegurarse de que el nonce esté entre 16 y 500 caracteres
-    const minNonceLength = 16;
-    const maxNonceLength = 500;
-    const trimmedNonce = base64Nonce.slice(0, Math.floor(Math.random() * (maxNonceLength - minNonceLength + 1)) + minNonceLength);
-
-    return trimmedNonce;
+  return nonce;
   };
 
-  const generatedNonce = generateNonce();
+  const nonce  = generateNonce();
 
-  return res.send({"data": { "nonce": generatedNonce},"message": "Information","status":200  });
+  return res.send({"data": { "nonce": nonce },"message": "Information","status":200  });
 
 
 })
